@@ -1,0 +1,14 @@
+torch>=1.4
+torchvision>=0.5
+pyyaml>=3.13
+opencv-python
+tqdm
+tensorboard
+lmdb
+packaging
+pillow-simd
+matplotlib
+yacs
+cityscapesscripts
+pyarrow==0.17.1
+mmcv-full

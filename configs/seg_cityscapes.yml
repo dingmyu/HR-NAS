@@ -1,0 +1,113 @@
+# log
+log_interval_detail: 2000
+
+data_transforms: imagenet1k_mnas_bicubic  # preprocessing strategy
+data_loader: imagenet1k_basic  # 'imagenet1k_basic' only
+data_loader_workers: 62  # number of total workers
+
+# basic info
+image_size: 224  # for profiling
+topk: [1, 5]  # log top-k acc
+
+# optimizer, check `utils/optim.py`
+optimizer: adamw  # rmsprop
+momentum: 0.9
+nesterov: False
+alpha: 0.9
+epsilon: 0.001
+eps_inside_sqrt: True
+weight_decay: 1.0e-5
+weight_decay_method: mnas
+
+# lr scheduler, check `utils/optim.py`
+lr_scheduler: onecycle
+div_factor: 25
+lr_stepwise: False
+exp_decaying_lr_gamma: 0.97
+exp_decay_epoch_interval: 2.4
+
+# label smoothing, check `utils/optim.py`
+label_smoothing: 0.1
+
+# exponential moving average for model var, check `utils/optim.py`
+moving_average_decay: 0.9999
+moving_average_decay_adjust: True
+moving_average_decay_base_batch: 4096
+
+# model profiling
+profiling: [gpu]  # on GPU only
+
+
+# pretrain, resume, test_only
+pretrained: ''
+resume: ''
+test_only: False
+
+# other
+random_seed: 1995
+reset_parameters: True
+reset_param_method: mnas
+
+
+model: models.hrnet
+model_kwparams: {
+  active_fn: 'nn.ReLU',
+  num_classes: 19,
+  width_mult: 1.0,
+  round_nearest: 2,
+  input_stride: 4,
+  bn_momentum: 0.01,
+  bn_epsilon: 1.0e-3,
+
+  input_channel: [24, 24],
+  expand_ratio: 4,
+  kernel_sizes: [3, 5, 7],
+  inverted_residual_setting: [
+    [1, [1], [24]],
+    [2, [2, 2], [18, 36]],
+    [3, [2, 2, 3], [18, 36, 72]],
+    [4, [2, 2, 3, 4], [18, 36, 72, 144]],
+    [4, [2, 2, 3, 4], [18, 36, 72, 144]]
+  ],
+  last_channel: 90,
+  head_channels: None,
+  fcn_head_for_seg: False,
+  task: segmentation
+}
+net_params: ''
+base_total_batch: 32
+per_gpu_batch_size: 4
+distill: False
+prune_params: {
+  method: network_slimming,
+  bn_prune_filter: expansion_only,
+  rho: 1.4e-4,
+  epoch_free: 0,
+  epoch_warmup: 25,
+  scheduler: linear,
+  stepwise: True,
+  logging_verbose: False,
+  use_transformer: False
+}
+use_distributed: True
+allreduce_bn: False
+
+model_shrink_threshold: 1.0e-3
+model_shrink_delta_flops: 1.0e+6
+bn_calibration: True
+bn_calibration_steps: 10
+bn_calibration_per_gpu_batch_size: 16
+
+# override part of model params
+'model_kwparams.batch_norm_momentum': 0.01
+'model_kwparams.batch_norm_epsilon': 1.0e-3
+
+use_hdfs: False
+dataset: cityscapes
+log_interval: 10
+num_epochs: 430
+base_lr: 0.04
+single_gpu_test: False
+eval_interval: 10
+data_root: ./data/cityscapes
+log_dir: output/seg_cityscapes
