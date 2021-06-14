@@ -129,7 +129,6 @@ Node 2:
 ## Running (train & evaluation)
 - Search for NAS models.
     ```shell script
-    NCCL_DEBUG=INFO \
     python3 -m torch.distributed.launch --nproc_per_node=${NPROC_PER_NODE} --nnodes=${N_NODES} \
         --node_rank=${NODE_RANK} --master_addr=${MASTER_ADDR} --master_port=${MASTER_PORT} \
         --use_env train.py app:configs/YOUR_TASK.yml
@@ -154,7 +153,6 @@ Node 2:
     
     - Retrain the model.
     ```shell script
-    NCCL_DEBUG=INFO \
     python3 -m torch.distributed.launch --nproc_per_node=${NPROC_PER_NODE} --nnodes=${N_NODES} \
         --node_rank=${NODE_RANK} --master_addr=${MASTER_ADDR} --master_port=${MASTER_PORT} \
         --use_env train.py app:configs/cls_retrain.yml
@@ -176,3 +174,12 @@ Node 2:
     - `--{{opt}} {{new_val}}` for command line overwriting.
 
 3. Any questions regarding HR-NAS, feel free to contact the author (mingyuding@hku.hk).
+4. If you find our work useful in your research please consider citing our paper:
+    ```
+    @inproceedings{ding2021hrnas,
+      title={HR-NAS: Searching Efficient High-Resolution Neural Architectures with Lightweight Transformers},
+      author={Ding, Mingyu and Lian, Xiaochen and Yang, Linjie and Wang, Peng and Jin, Xiaojie and Lu, Zhiwu and Luo, Ping},
+      booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+      year={2021}
+    }
+    ```
